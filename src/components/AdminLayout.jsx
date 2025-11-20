@@ -1,0 +1,141 @@
+import { Layout, Menu } from "antd";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+const { Sider, Content, Header } = Layout;
+
+// nhóm quyền
+const CLASS_LEADER_ROLES = [
+  "ROLE_Cán sự lớp",
+  "ROLE_Liên chi hội",
+  "ROLE_Cán bộ khoa",
+  "ROLE_Admin",
+];
+
+const FACULTY_ROLES = ["ROLE_Cán bộ khoa", "ROLE_Admin"];
+const ADMIN_ONLY = ["ROLE_Admin"];
+
+const adminMenu = [
+  {
+    key: "activities",
+    label: "Quản lý hoạt động",
+    path: "/admin/activities",
+    roles: CLASS_LEADER_ROLES,
+  },
+  {
+    key: "deploy",
+    label: "Nhận từ Khoa",
+    path: "/admin/deploy",
+    roles: ["ROLE_Cán sự lớp", "ROLE_Liên chi hội"],
+  },
+  {
+    key: "approval",
+    label: "Duyệt minh chứng",
+    path: "/admin/approval",
+    roles: CLASS_LEADER_ROLES,
+  },
+  {
+    key: "attendance",
+    label: "Điểm danh",
+    path: "/admin/attendance",
+    roles: CLASS_LEADER_ROLES,
+  },
+  {
+    key: "drl-config",
+    label: "Cấu hình DRL",
+    path: "/admin/drl-config",
+    roles: FACULTY_ROLES,
+  },
+  {
+    key: "complaints",
+    label: "Khiếu nại",
+    path: "/admin/complaints",
+    roles: FACULTY_ROLES,
+  },
+  {
+    key: "classes",
+    label: "Lớp",
+    path: "/admin/classes",
+    roles: FACULTY_ROLES,
+  },
+  {
+    key: "users",
+    label: "Người dùng & vai trò",
+    path: "/admin/users",
+    roles: FACULTY_ROLES,
+  },
+  {
+    key: "report-export",
+    label: "Xuất DRL",
+    path: "/admin/report",
+    roles: FACULTY_ROLES,
+  },
+  {
+    key: "faculties",
+    label: "Khoa",
+    path: "/admin/faculties",
+    roles: ADMIN_ONLY,
+  },
+];
+
+export default function AdminLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector((s) => s.auth.user);
+  const roles = useSelector((s) => s.auth.roles) || [];
+
+  const isFacultyRole =
+    roles.includes("ROLE_Cán bộ khoa") || roles.includes("ROLE_Admin");
+
+  // Lọc menu theo quyền
+  const visibleMenu = adminMenu.filter((item) =>
+    roles.some((r) => item.roles.includes(r))
+  );
+
+  const selectedKey = visibleMenu.find((m) =>
+    location.pathname.startsWith(m.path)
+  )?.key;
+
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider theme="dark">
+        <div
+          style={{
+            color: "white",
+            padding: 16,
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          ADMIN PANEL
+        </div>
+
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={selectedKey ? [selectedKey] : []}
+          items={visibleMenu.map((m) => ({
+            key: m.key,
+            label:
+              m.key === "activities"
+                ? isFacultyRole
+                  ? "Hoạt động Khoa"
+                  : "Hoạt động Lớp"
+                : m.label,
+          }))}
+          onClick={(item) => {
+            const menuItem = visibleMenu.find((m) => m.key === item.key);
+            if (menuItem) navigate(menuItem.path);
+          }}
+        />
+      </Sider>
+
+      <Layout>
+        <Header style={{ background: "#fff" }} />
+        <Content style={{ padding: 24 }}>
+          <Outlet />
+        </Content>
+      </Layout>
+    </Layout>
+  );
+}
