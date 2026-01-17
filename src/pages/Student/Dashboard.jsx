@@ -23,6 +23,8 @@ import {
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const { Title, Text } = Typography;
 
@@ -38,6 +40,23 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  // Lấy roles từ Redux
+  const roles = useSelector((s) => s.auth.roles) || [];
+
+  // Kiểm tra role
+  const isOrganizer = roles.some((r) =>
+    ["ROLE_Cán sự lớp", "ROLE_Liên chi hội", "ROLE_Cán bộ khoa", "ROLE_Admin"].includes(r)
+  );
+
+  const isApprover = roles.some((r) =>
+    ["ROLE_Cán sự lớp", "ROLE_Liên chi hội", "ROLE_Cán bộ khoa", "ROLE_Admin"].includes(r)
+  );
+
+  const isFaculty = roles.some((r) =>
+    ["ROLE_Cán bộ khoa", "ROLE_Admin"].includes(r)
+  );
+
 
   const fetchAllData = async () => {
     try {
@@ -127,33 +146,33 @@ export default function Dashboard() {
   };
 
   // Đăng ký hoạt động
-const handleRegister = async (e, id) => {
-  e.stopPropagation();
-  try {
-    await api.post("/registrations", { hoatDongId: id });
-    toast.success("Đăng ký thành công!");
-    await fetchAllData();
-  } catch (err) {
-    console.error(err);
+  const handleRegister = async (e, id) => {
+    e.stopPropagation();
+    try {
+      await api.post("/registrations", { hoatDongId: id });
+      toast.success("Đăng ký thành công!");
+      await fetchAllData();
+    } catch (err) {
+      console.error(err);
 
-    const data = err.response?.data;
-    let backendMsg = "";
+      const data = err.response?.data;
+      let backendMsg = "";
 
-    if (typeof data === "string") {
-      backendMsg = data;
-    } else if (data && typeof data === "object") {
-      backendMsg = data.message || data.error || "";
+      if (typeof data === "string") {
+        backendMsg = data;
+      } else if (data && typeof data === "object") {
+        backendMsg = data.message || data.error || "";
+      }
+
+      if (backendMsg && backendMsg.includes("đã đăng ký")) {
+        toast.warning(backendMsg || "Bạn đã đăng ký hoạt động này rồi");
+      } else if (backendMsg) {
+        toast.error(backendMsg);
+      } else {
+        toast.error("Đăng ký thất bại");
+      }
     }
-
-    if (backendMsg && backendMsg.includes("đã đăng ký")) {
-      toast.warning(backendMsg || "Bạn đã đăng ký hoạt động này rồi");
-    } else if (backendMsg) {
-      toast.error(backendMsg);
-    } else {
-      toast.error("Đăng ký thất bại");
-    }
-  }
-};
+  };
 
 
   // Hủy đăng ký hoạt động (nếu bạn có API)
@@ -234,7 +253,7 @@ const handleRegister = async (e, id) => {
         <Col xs={24} sm={12} lg={6}>
           <Card
             hoverable
-            onClick={() => navigate("/evidences/my?status=pending")}
+            onClick={() => navigate("/my-evidences?status=pending")}
             style={{
               borderRadius: 16,
               boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
@@ -259,7 +278,7 @@ const handleRegister = async (e, id) => {
         <Col xs={24} sm={12} lg={6}>
           <Card
             hoverable
-            onClick={() => navigate("/evidences/my?status=approved")}
+            onClick={() => navigate("/my-evidences?status=approved")}
             style={{
               borderRadius: 16,
               boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
@@ -305,6 +324,110 @@ const handleRegister = async (e, id) => {
           </Card>
         </Col>
       </Row>
+
+      {/* Chức năng nhanh theo role */}
+      {(isOrganizer || isApprover || isFaculty) && (
+        <Card
+          title={<Title level={4}>Chức năng quản trị</Title>}
+          style={{
+            borderRadius: 16,
+            boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+            marginBottom: 30,
+          }}
+        >
+          <Row gutter={[16, 16]}>
+            {isOrganizer && (
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Card
+                  hoverable
+                  onClick={() => navigate("/admin/activities")}
+                  style={{
+                    textAlign: "center",
+                    borderRadius: 12,
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    color: "white",
+                  }}
+                >
+                  <CalendarOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+                  <div style={{ fontWeight: "bold" }}>Quản lý hoạt động</div>
+                </Card>
+              </Col>
+            )}
+
+            {isApprover && (
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Card
+                  hoverable
+                  onClick={() => navigate("/admin/approval")}
+                  style={{
+                    textAlign: "center",
+                    borderRadius: 12,
+                    background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                    color: "white",
+                  }}
+                >
+                  <CheckCircleOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+                  <div style={{ fontWeight: "bold" }}>Duyệt minh chứng</div>
+                </Card>
+              </Col>
+            )}
+
+            {isOrganizer && (
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Card
+                  hoverable
+                  onClick={() => navigate("/admin/attendance")}
+                  style={{
+                    textAlign: "center",
+                    borderRadius: 12,
+                    background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                    color: "white",
+                  }}
+                >
+                  <TeamOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+                  <div style={{ fontWeight: "bold" }}>Điểm danh</div>
+                </Card>
+              </Col>
+            )}
+
+            {isFaculty && (
+              <>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card
+                    hoverable
+                    onClick={() => navigate("/admin/report")}
+                    style={{
+                      textAlign: "center",
+                      borderRadius: 12,
+                      background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                      color: "white",
+                    }}
+                  >
+                    <TrophyOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+                    <div style={{ fontWeight: "bold" }}>Xuất báo cáo</div>
+                  </Card>
+                </Col>
+
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card
+                    hoverable
+                    onClick={() => navigate("/admin/drl-config")}
+                    style={{
+                      textAlign: "center",
+                      borderRadius: 12,
+                      background: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+                      color: "white",
+                    }}
+                  >
+                    <ClockCircleOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+                    <div style={{ fontWeight: "bold" }}>Cấu hình DRL</div>
+                  </Card>
+                </Col>
+              </>
+            )}
+          </Row>
+        </Card>
+      )}
 
       {/* Hoạt động sắp tới + Thông tin nhanh */}
       <Row gutter={[20, 20]}>

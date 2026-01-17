@@ -5,11 +5,23 @@ import { useSelector } from "react-redux";
 const { Sider, Content, Header } = Layout;
 
 // nhóm quyền
-const CLASS_LEADER_ROLES = [
+const ORGANIZER_ROLES = [
   "ROLE_Cán sự lớp",
   "ROLE_Liên chi hội",
   "ROLE_Cán bộ khoa",
   "ROLE_Admin",
+];
+
+const APPROVER_ROLES = [
+  "ROLE_Cán sự lớp",
+  "ROLE_Liên chi hội",
+  "ROLE_Cán bộ khoa",
+  "ROLE_Admin",
+];
+
+const CLASS_LEVEL_ROLES = [
+  "ROLE_Cán sự lớp",
+  "ROLE_Liên chi hội",
 ];
 
 const FACULTY_ROLES = ["ROLE_Cán bộ khoa", "ROLE_Admin"];
@@ -20,25 +32,25 @@ const adminMenu = [
     key: "activities",
     label: "Quản lý hoạt động",
     path: "/admin/activities",
-    roles: CLASS_LEADER_ROLES,
+    roles: ORGANIZER_ROLES,
   },
   {
     key: "deploy",
     label: "Nhận từ Khoa",
     path: "/admin/deploy",
-    roles: ["ROLE_Cán sự lớp", "ROLE_Liên chi hội"],
+    roles: CLASS_LEVEL_ROLES,
   },
   {
     key: "approval",
     label: "Duyệt minh chứng",
     path: "/admin/approval",
-    roles: CLASS_LEADER_ROLES,
+    roles: APPROVER_ROLES,
   },
   {
     key: "attendance",
     label: "Điểm danh",
     path: "/admin/attendance",
-    roles: CLASS_LEADER_ROLES,
+    roles: ORGANIZER_ROLES,
   },
   {
     key: "drl-config",
@@ -107,7 +119,7 @@ export default function AdminLayout() {
             textAlign: "center",
           }}
         >
-          ADMIN PANEL
+          QUẢN TRỊ
         </div>
 
         <Menu

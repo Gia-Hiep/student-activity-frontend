@@ -38,12 +38,25 @@ import DeployFacultyActivities from "./pages/Admin/DeployFacultyActivities";
 const { Content } = Layout;
 
 // Nhóm quyền
-const CLASS_LEADER_ROLES = [
+const ORGANIZER_ROLES = [
   "ROLE_Cán sự lớp",
   "ROLE_Liên chi hội",
   "ROLE_Cán bộ khoa",
   "ROLE_Admin",
 ];
+
+const APPROVER_ROLES = [
+  "ROLE_Cán sự lớp",
+  "ROLE_Liên chi hội",
+  "ROLE_Cán bộ khoa",
+  "ROLE_Admin",
+];
+
+const CLASS_LEVEL_ROLES = [
+  "ROLE_Cán sự lớp",
+  "ROLE_Liên chi hội",
+];
+
 const FACULTY_ROLES = ["ROLE_Cán bộ khoa", "ROLE_Admin"];
 const ADMIN_ONLY = ["ROLE_Admin"];
 
@@ -85,7 +98,7 @@ export default function App() {
           <Route
             path="admin"
             element={
-              <ProtectedRoute allowedRoles={CLASS_LEADER_ROLES}>
+              <ProtectedRoute allowedRoles={ORGANIZER_ROLES}>
                 <AdminLayout />
               </ProtectedRoute>
             }
@@ -98,17 +111,29 @@ export default function App() {
             <Route
               path="deploy"
               element={
-                <ProtectedRoute
-                  allowedRoles={["ROLE_Cán sự lớp", "ROLE_Liên chi hội"]}
-                >
+                <ProtectedRoute allowedRoles={CLASS_LEVEL_ROLES}>
                   <DeployFacultyActivities />
                 </ProtectedRoute>
               }
             />
 
-            {/* Cán sự lớp */}
-            <Route path="approval" element={<ApprovalList />} />
-            <Route path="attendance" element={<AttendanceManagement />} />
+            {/* Duyệt minh chứng và điểm danh */}
+            <Route
+              path="approval"
+              element={
+                <ProtectedRoute allowedRoles={APPROVER_ROLES}>
+                  <ApprovalList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="attendance"
+              element={
+                <ProtectedRoute allowedRoles={ORGANIZER_ROLES}>
+                  <AttendanceManagement />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Cán bộ khoa */}
             <Route
