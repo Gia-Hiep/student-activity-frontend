@@ -26,24 +26,58 @@ export default function DrlInfo() {
   ];
 
   return (
-    <div className="space-y-8">
-      <Card title="Tiêu chí điểm rèn luyện">
-        <Table
-          dataSource={criteria}
-          columns={criteriaColumns}
-          rowKey="id"
-          pagination={false}
-        />
-      </Card>
+    <div className="min-h-screen bg-slate-50">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 space-y-6">
+        {/* Header */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Thông tin điểm rèn luyện
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Danh sách tiêu chí và quy tắc quy đổi điểm theo từng loại hoạt động.
+          </p>
+        </div>
 
-      <Card title="Quy tắc quy đổi điểm">
-        <Table
-          dataSource={rules}
-          columns={ruleColumns}
-          rowKey="id"
-          pagination={false}
-        />
-      </Card>
+        {/* Tiêu chí */}
+        <Card
+          title={<span className="font-semibold">Tiêu chí điểm rèn luyện</span>}
+          className="rounded-2xl shadow-sm"
+        >
+          <div className="rounded-xl border border-slate-200 overflow-hidden">
+            <Table
+              dataSource={criteria}
+              columns={criteriaColumns}
+              rowKey="id"
+              pagination={false}
+              className="[&_.ant-table-thead>tr>th]:bg-slate-50"
+            />
+          </div>
+
+          <div className="mt-3 text-xs text-slate-500">
+            Gợi ý: dùng bảng này để biết mỗi nhóm tiêu chí có điểm tối đa bao nhiêu.
+          </div>
+        </Card>
+
+        {/* Quy tắc */}
+        <Card
+          title={<span className="font-semibold">Quy tắc quy đổi điểm</span>}
+          className="rounded-2xl shadow-sm"
+        >
+          <div className="rounded-xl border border-slate-200 overflow-hidden">
+            <Table
+              dataSource={rules}
+              columns={ruleColumns}
+              rowKey="id"
+              pagination={false}
+              className="[&_.ant-table-thead>tr>th]:bg-slate-50"
+            />
+          </div>
+
+          <div className="mt-3 text-xs text-slate-500">
+            Lưu ý: “Giới hạn mỗi HK” là số điểm tối đa được cộng cho cùng một loại trong 1 học kỳ.
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

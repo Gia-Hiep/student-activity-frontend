@@ -25,7 +25,6 @@ import api from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-
 const { Title, Text } = Typography;
 
 export default function Dashboard() {
@@ -56,7 +55,6 @@ export default function Dashboard() {
   const isFaculty = roles.some((r) =>
     ["ROLE_Cán bộ khoa", "ROLE_Admin"].includes(r)
   );
-
 
   const fetchAllData = async () => {
     try {
@@ -174,7 +172,6 @@ export default function Dashboard() {
     }
   };
 
-
   // Hủy đăng ký hoạt động (nếu bạn có API)
   const handleCancelRegister = async (e, id) => {
     e.stopPropagation();
@@ -197,363 +194,333 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "100px 0" }}>
-        <Spin size="large" />
-        <Text style={{ display: "block", marginTop: 16 }}>
-          Đang tải dữ liệu...
-        </Text>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 px-4">
+        <div className="rounded-2xl border border-slate-200 bg-white px-10 py-8 shadow-sm">
+          <div className="flex flex-col items-center gap-3">
+            <Spin size="large" />
+            <Text className="!m-0 text-slate-600">Đang tải dữ liệu...</Text>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
-    return <Alert toast="Lỗi" description={error} type="error" showIcon />;
+    return (
+      <div className="mx-auto w-full max-w-6xl px-4 py-6">
+        <Alert message="Lỗi" description={error} type="error" showIcon />
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "20px 0", background: "#f5f7fa" }}>
-      {/* Chào mừng */}
-      <div style={{ marginBottom: 30 }}>
-        <Title level={2} style={{ color: "#1e3a8a", fontWeight: "bold" }}>
-          Chào mừng quay lại, {user.hoTen || "Sinh viên"}!
-        </Title>
-        <Text type="secondary">
-          Hôm nay là {today} • Chúc bạn một ngày tốt lành!
-        </Text>
-      </div>
+    <div className="min-h-screen bg-slate-50">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6">
+        {/* Chào mừng */}
+        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <Title level={2} className="!mb-1 !text-slate-900">
+            Chào mừng quay lại, {user.hoTen || "Sinh viên"}!
+          </Title>
+          <Text type="secondary" className="!m-0">
+            Hôm nay là {today} • Chúc bạn một ngày tốt lành!
+          </Text>
+        </div>
 
-      {/* 4 ô thống kê – THÊM onClick + hoverable */}
-      <Row gutter={[20, 20]} style={{ marginBottom: 30 }}>
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            onClick={() => navigate("/registrations/my")}
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              color: "white",
-              cursor: "pointer",
-            }}
-            styles={{ padding: "20px" }}
-          >
-            <Statistic
-              title={
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>
-                  Đã đăng ký
-                </span>
-              }
-              value={stats.registered}
-              prefix={<CalendarOutlined />}
-              styles={{ color: "white", fontSize: 36, fontWeight: "bold" }}
-            />
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            onClick={() => navigate("/my-evidences?status=pending")}
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-              background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            <Statistic
-              title={
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>
-                  Chờ duyệt
-                </span>
-              }
-              value={stats.pending}
-              prefix={<ClockCircleOutlined />}
-              styles={{ color: "white", fontSize: 36, fontWeight: "bold" }}
-            />
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            onClick={() => navigate("/my-evidences?status=approved")}
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-              background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            <Statistic
-              title={
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>Đã duyệt</span>
-              }
-              value={stats.approved}
-              prefix={<CheckCircleOutlined />}
-              styles={{ color: "white", fontSize: 36, fontWeight: "bold" }}
-            />
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card
-            hoverable
-            onClick={() => navigate("/my-score")}
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-              background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            <Statistic
-              title={
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>
-                  Điểm rèn luyện
-                </span>
-              }
-              value={stats.totalPoints}
-              suffix="/ 100"
-              prefix={<TrophyOutlined />}
-              styles={{ color: "white", fontSize: 42, fontWeight: "bold" }}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Chức năng nhanh theo role */}
-      {(isOrganizer || isApprover || isFaculty) && (
-        <Card
-          title={<Title level={4}>Chức năng quản trị</Title>}
-          style={{
-            borderRadius: 16,
-            boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-            marginBottom: 30,
-          }}
-        >
-          <Row gutter={[16, 16]}>
-            {isOrganizer && (
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Card
-                  hoverable
-                  onClick={() => navigate("/admin/activities")}
-                  style={{
-                    textAlign: "center",
-                    borderRadius: 12,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    color: "white",
-                  }}
-                >
-                  <CalendarOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                  <div style={{ fontWeight: "bold" }}>Quản lý hoạt động</div>
-                </Card>
-              </Col>
-            )}
-
-            {isApprover && (
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Card
-                  hoverable
-                  onClick={() => navigate("/admin/approval")}
-                  style={{
-                    textAlign: "center",
-                    borderRadius: 12,
-                    background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                    color: "white",
-                  }}
-                >
-                  <CheckCircleOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                  <div style={{ fontWeight: "bold" }}>Duyệt minh chứng</div>
-                </Card>
-              </Col>
-            )}
-
-            {isOrganizer && (
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Card
-                  hoverable
-                  onClick={() => navigate("/admin/attendance")}
-                  style={{
-                    textAlign: "center",
-                    borderRadius: 12,
-                    background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-                    color: "white",
-                  }}
-                >
-                  <TeamOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                  <div style={{ fontWeight: "bold" }}>Điểm danh</div>
-                </Card>
-              </Col>
-            )}
-
-            {isFaculty && (
-              <>
-                <Col xs={24} sm={12} md={8} lg={6}>
-                  <Card
-                    hoverable
-                    onClick={() => navigate("/admin/report")}
-                    style={{
-                      textAlign: "center",
-                      borderRadius: 12,
-                      background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-                      color: "white",
-                    }}
-                  >
-                    <TrophyOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                    <div style={{ fontWeight: "bold" }}>Xuất báo cáo</div>
-                  </Card>
-                </Col>
-
-                <Col xs={24} sm={12} md={8} lg={6}>
-                  <Card
-                    hoverable
-                    onClick={() => navigate("/admin/drl-config")}
-                    style={{
-                      textAlign: "center",
-                      borderRadius: 12,
-                      background: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-                      color: "white",
-                    }}
-                  >
-                    <ClockCircleOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                    <div style={{ fontWeight: "bold" }}>Cấu hình DRL</div>
-                  </Card>
-                </Col>
-              </>
-            )}
-          </Row>
-        </Card>
-      )}
-
-      {/* Hoạt động sắp tới + Thông tin nhanh */}
-      <Row gutter={[20, 20]}>
-        <Col xs={24} lg={16}>
-          <Card
-            title={
-              <Title level={4}>
-                <TeamOutlined /> Hoạt động sắp tới
-              </Title>
-            }
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-            }}
-            styles={{
-              background: "#1e3a8a",
-              color: "white",
-              borderRadius: "16px 16px 0 0",
-            }}
-          >
-            {stats.upcoming.length === 0 ? (
-              <Text type="secondary">Chưa có hoạt động nào sắp tới.</Text>
-            ) : (
-              <List
-                itemLayout="horizontal"
-                dataSource={stats.upcoming}
-                renderItem={(item) => (
-                  <List.Item
-                    onClick={() => handleViewActivity(item.id)}
-                    style={{ cursor: "pointer" }}
-                    actions={[
-                      item.daDangKy ? (
-                        <Button
-                          type="link"
-                          danger
-                          onClick={(e) => handleCancelRegister(e, item.id)}
-                        >
-                          Hủy đăng ký
-                        </Button>
-                      ) : (
-                        <Button
-                          type="primary"
-                          onClick={(e) => handleRegister(e, item.id)}
-                        >
-                          Đăng ký
-                        </Button>
-                      ),
-                    ]}
-                  >
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar
-                          style={{ backgroundColor: "#1e3a8a" }}
-                          icon={<CalendarOutlined />}
-                        />
-                      }
-                      title={
-                        <Text strong style={{ fontSize: 16 }}>
-                          {item.name}
-                        </Text>
-                      }
-                      description={
-                        <div>
-                          <ClockCircleOutlined /> {item.date} • {item.location}{" "}
-                          {item.status !== "open" && (
-                            <Tag color="red" style={{ marginLeft: 8 }}>
-                              Đã đóng
-                            </Tag>
-                          )}
-                        </div>
-                      }
-                    />
-                  </List.Item>
-                )}
+        {/* 4 ô thống kê */}
+        <Row gutter={[20, 20]} className="!mb-6">
+          <Col xs={24} sm={12} lg={6}>
+            <Card
+              hoverable
+              onClick={() => navigate("/registrations/my")}
+              className="rounded-2xl shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
+              <Statistic
+                title={<span className="text-white/90">Đã đăng ký</span>}
+                value={stats.registered}
+                prefix={<CalendarOutlined />}
               />
-            )}
-          </Card>
-        </Col>
+            </Card>
+          </Col>
 
-        {/* Phần xếp hạng & thông báo giữ nguyên */}
-        <Col xs={24} lg={8}>
-          <Card
-            title={
-              <Title level={4}>
-                <TrophyOutlined /> Xếp hạng hiện tại
+          <Col xs={24} sm={12} lg={6}>
+            <Card
+              hoverable
+              onClick={() => navigate("/my-evidences?status=pending")}
+              className="rounded-2xl shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
+              <Statistic
+                title={<span className="text-white/90">Chờ duyệt</span>}
+                value={stats.pending}
+                prefix={<ClockCircleOutlined />}
+              />
+            </Card>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <Card
+              hoverable
+              onClick={() => navigate("/my-evidences?status=approved")}
+              className="rounded-2xl shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
+              <Statistic
+                title={<span className="text-white/90">Đã duyệt</span>}
+                value={stats.approved}
+                prefix={<CheckCircleOutlined />}
+              />
+            </Card>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <Card
+              hoverable
+              onClick={() => navigate("/my-score")}
+              className="rounded-2xl shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
+              <Statistic
+                title={<span className="text-white/90">Điểm rèn luyện</span>}
+                value={stats.totalPoints}
+                suffix="/ 100"
+                prefix={<TrophyOutlined />}
+              />
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Chức năng nhanh theo role */}
+        {(isOrganizer || isApprover || isFaculty) && (
+          <Card className="rounded-2xl shadow-sm !mb-6">
+            <div className="flex items-center justify-between">
+              <Title level={4} className="!mb-0">
+                Chức năng quản trị
               </Title>
-            }
-            style={{
-              borderRadius: 16,
-              boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-              height: "fit-content",
-            }}
-            headStyle={{ background: "#f59e0b", color: "white" }}
-          >
-            <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <div
-                style={{ fontSize: 60, fontWeight: "bold", color: "#f59e0b" }}
-              >
-                12
-              </div>
-              <Text strong style={{ fontSize: 18 }}>
-                Hạng 12 lớp
+              <Text type="secondary" className="hidden sm:block">
+                Các lối tắt dành cho vai trò quản trị
               </Text>
-              <Divider />
-              <Text type="secondary">Tăng 3 bậc so với tháng trước</Text>
+            </div>
+
+            <div className="mt-4">
+              <Row gutter={[16, 16]}>
+                {isOrganizer && (
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Card
+                      hoverable
+                      onClick={() => navigate("/admin/activities")}
+                      className="rounded-xl text-center text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      }}
+                    >
+                      <CalendarOutlined className="text-3xl mb-2" />
+                      <div className="font-semibold">Quản lý hoạt động</div>
+                    </Card>
+                  </Col>
+                )}
+
+                {isApprover && (
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Card
+                      hoverable
+                      onClick={() => navigate("/admin/approval")}
+                      className="rounded-xl text-center text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                      }}
+                    >
+                      <CheckCircleOutlined className="text-3xl mb-2" />
+                      <div className="font-semibold">Duyệt minh chứng</div>
+                    </Card>
+                  </Col>
+                )}
+
+                {isOrganizer && (
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Card
+                      hoverable
+                      onClick={() => navigate("/admin/attendance")}
+                      className="rounded-xl text-center text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                      }}
+                    >
+                      <TeamOutlined className="text-3xl mb-2" />
+                      <div className="font-semibold">Điểm danh</div>
+                    </Card>
+                  </Col>
+                )}
+
+                {isFaculty && (
+                  <>
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Card
+                        hoverable
+                        onClick={() => navigate("/admin/report")}
+                        className="rounded-xl text-center text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                        }}
+                      >
+                        <TrophyOutlined className="text-3xl mb-2" />
+                        <div className="font-semibold">Xuất báo cáo</div>
+                      </Card>
+                    </Col>
+
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Card
+                        hoverable
+                        onClick={() => navigate("/admin/drl-config")}
+                        className="rounded-xl text-center text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+                        }}
+                      >
+                        <ClockCircleOutlined className="text-3xl mb-2" />
+                        <div className="font-semibold">Cấu hình DRL</div>
+                      </Card>
+                    </Col>
+                  </>
+                )}
+              </Row>
             </div>
           </Card>
+        )}
 
-          <Card
-            style={{
-              marginTop: 20,
-              borderRadius: 16,
-              boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-            }}
-            title="Thông báo mới"
-          >
-            <List>
-              <List.Item>
-                <Text strong>Đã duyệt minh chứng</Text>
-                <br />
-                <Text type="secondary">Hiến máu HUTECH 2024</Text>
-              </List.Item>
-            </List>
-          </Card>
-        </Col>
-      </Row>
+        {/* Hoạt động sắp tới + Thông tin nhanh */}
+        <Row gutter={[20, 20]}>
+          <Col xs={24} lg={16}>
+            <Card className="rounded-2xl shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <Title level={4} className="!mb-0">
+                  <TeamOutlined /> Hoạt động sắp tới
+                </Title>
+                <Button
+                  type="default"
+                  onClick={() => navigate("/activities")}
+                  className="rounded-lg"
+                >
+                  Xem tất cả
+                </Button>
+              </div>
+
+              {stats.upcoming.length === 0 ? (
+                <Text type="secondary">Chưa có hoạt động nào sắp tới.</Text>
+              ) : (
+                <div className="rounded-xl border border-slate-200 overflow-hidden">
+                  <List
+                    itemLayout="horizontal"
+                    dataSource={stats.upcoming}
+                    renderItem={(item) => (
+                      <List.Item
+                        onClick={() => handleViewActivity(item.id)}
+                        className="cursor-pointer hover:bg-slate-50 transition"
+                        actions={[
+                          item.daDangKy ? (
+                            <Button
+                              type="link"
+                              danger
+                              onClick={(e) => handleCancelRegister(e, item.id)}
+                            >
+                              Hủy đăng ký
+                            </Button>
+                          ) : (
+                            <Button
+                              type="primary"
+                              onClick={(e) => handleRegister(e, item.id)}
+                              className="rounded-lg"
+                            >
+                              Đăng ký
+                            </Button>
+                          ),
+                        ]}
+                      >
+                        <List.Item.Meta
+                          avatar={
+                            <Avatar
+                              className="bg-slate-900"
+                              icon={<CalendarOutlined />}
+                            />
+                          }
+                          title={<span className="font-semibold">{item.name}</span>}
+                          description={
+                            <div className="text-slate-600">
+                              <ClockCircleOutlined /> {item.date} • {item.location}{" "}
+                              {item.status !== "open" && (
+                                <Tag color="red" className="ml-2">
+                                  Đã đóng
+                                </Tag>
+                              )}
+                            </div>
+                          }
+                        />
+                      </List.Item>
+                    )}
+                  />
+                </div>
+              )}
+            </Card>
+          </Col>
+
+          <Col xs={24} lg={8}>
+            <Card className="rounded-2xl shadow-sm">
+              <div className="flex items-center justify-between">
+                <Title level={4} className="!mb-0">
+                  <TrophyOutlined /> Xếp hạng hiện tại
+                </Title>
+              </div>
+
+              <div className="text-center py-6">
+                <div className="text-6xl font-extrabold text-amber-500">12</div>
+                <div className="mt-1 text-lg font-semibold text-slate-900">
+                  Hạng 12 lớp
+                </div>
+                <Divider />
+                <div className="text-sm text-slate-500">
+                  Tăng 3 bậc so với tháng trước
+                </div>
+              </div>
+            </Card>
+
+            <Card className="mt-5 rounded-2xl shadow-sm" title="Thông báo mới">
+              <List>
+                <List.Item className="hover:bg-slate-50 transition rounded-lg px-2">
+                  <div>
+                    <div className="font-semibold text-slate-900">
+                      Đã duyệt minh chứng
+                    </div>
+                    <div className="text-sm text-slate-500">
+                      Hiến máu QNU
+                    </div>
+                  </div>
+                </List.Item>
+              </List>
+            </Card>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }
