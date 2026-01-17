@@ -6,7 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import './index.css';
 // Trang chung
 import LoginPage from "./pages/Auth/LoginPage";
 

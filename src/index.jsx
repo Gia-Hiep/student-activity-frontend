@@ -4,10 +4,10 @@ import './index.css';
 import App from './App';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
-import 'antd/dist/reset.css'; 
+import 'antd/dist/reset.css';
 import { message } from "antd";
 message.config({
-  top: 80,              
+  top: 80,
   duration: 3,
   maxCount: 1,
 });
