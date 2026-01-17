@@ -19,10 +19,7 @@ const APPROVER_ROLES = [
   "ROLE_Admin",
 ];
 
-const CLASS_LEVEL_ROLES = [
-  "ROLE_Cán sự lớp",
-  "ROLE_Liên chi hội",
-];
+const CLASS_LEVEL_ROLES = ["ROLE_Cán sự lớp", "ROLE_Liên chi hội"];
 
 const FACULTY_ROLES = ["ROLE_Cán bộ khoa", "ROLE_Admin"];
 const ADMIN_ONLY = ["ROLE_Admin"];
@@ -109,8 +106,8 @@ export default function AdminLayout() {
   )?.key;
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider theme="dark">
+    <Layout style={{ minHeight: "100vh" }} className="bg-slate-50">
+      <Sider theme="dark" className="!bg-slate-900 shadow-lg">
         <div
           style={{
             color: "white",
@@ -118,6 +115,7 @@ export default function AdminLayout() {
             fontWeight: "bold",
             textAlign: "center",
           }}
+          className="border-b border-slate-700 tracking-wide text-lg"
         >
           QUẢN TRỊ
         </div>
@@ -125,6 +123,7 @@ export default function AdminLayout() {
         <Menu
           theme="dark"
           mode="inline"
+          className="!bg-slate-900"
           selectedKeys={selectedKey ? [selectedKey] : []}
           items={visibleMenu.map((m) => ({
             key: m.key,
@@ -142,10 +141,13 @@ export default function AdminLayout() {
         />
       </Sider>
 
-      <Layout>
-        <Header style={{ background: "#fff" }} />
-        <Content style={{ padding: 24 }}>
-          <Outlet />
+      <Layout className="bg-slate-50">
+        <Header style={{ background: "#fff" }} className="shadow-sm" />
+
+        <Content style={{ padding: 24 }} className="p-6">
+          <div className="bg-white rounded-xl shadow p-6 min-h-[calc(100vh-120px)]">
+            <Outlet />
+          </div>
         </Content>
       </Layout>
     </Layout>
