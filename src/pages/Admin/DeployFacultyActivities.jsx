@@ -14,7 +14,7 @@ export default function DeployFacultyActivities() {
       setActivities(res.data || []);
     } catch (err) {
       console.error(err);
-      toast.error("Không tải được danh sách hoạt động Khoa");
+      toast.error("Không tải được danh sách hoạt động KhAoa");
     } finally {
       setLoading(false);
     }
@@ -91,18 +91,36 @@ export default function DeployFacultyActivities() {
   ];
 
   return (
-    <div>
-      <h2 style={{ marginBottom: 24 }}>Nhận hoạt động từ Khoa</h2>
-      <p style={{ marginBottom: 12 }}>
-        Cán sự lớp / Liên chi hội chọn hoạt động Khoa để triển khai cho lớp
-        mình.
-      </p>
-      <Table
-        dataSource={activities}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-      />
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold text-slate-800">
+            Nhận hoạt động từ Khoa
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Cán sự lớp / Liên chi hội chọn hoạt động Khoa để triển khai cho lớp
+            mình.
+          </p>
+        </div>
+
+        <div className="text-sm text-slate-500">
+          Tổng hoạt động:{" "}
+          <span className="font-semibold text-slate-700">
+            {activities?.length || 0}
+          </span>
+        </div>
+      </div>
+
+      {/* Table Card */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+        <Table
+          dataSource={activities}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+        />
+      </div>
     </div>
   );
 }

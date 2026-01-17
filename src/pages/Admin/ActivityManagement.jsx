@@ -276,28 +276,38 @@ export default function ActivityManagement() {
   ];
 
   return (
-    <div>
-      <h2 style={{ marginBottom: 24 }}>
-        {isFacultyRole ? "Quản lý hoạt động KHOA" : "Quản lý hoạt động LỚP"}
-      </h2>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold text-slate-800">
+            {isFacultyRole ? "Quản lý hoạt động KHOA" : "Quản lý hoạt động LỚP"}
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Quản lý danh sách hoạt động, thời gian, loại hoạt động và danh sách
+            sinh viên đăng ký.
+          </p>
+        </div>
 
-      {/* Nút tạo chỉ cho Khoa/Admin */}
-      {isFacultyRole && (
-        <Button
-          type="primary"
-          onClick={openCreate}
-          style={{ marginBottom: 16 }}
-        >
-          Tạo hoạt động Khoa mới
-        </Button>
-      )}
+        {/* Nút tạo chỉ cho Khoa/Admin */}
+        {isFacultyRole && (
+          <div className="shrink-0">
+            <Button type="primary" onClick={openCreate}>
+              Tạo hoạt động Khoa mới
+            </Button>
+          </div>
+        )}
+      </div>
 
-      <Table
-        dataSource={activities}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-      />
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+        <Table
+          dataSource={activities}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+        />
+      </div>
 
       {/* Modal tạo / sửa */}
       <Modal
@@ -307,41 +317,50 @@ export default function ActivityManagement() {
         footer={null}
         destroyOnClose
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            name="tenHd"
-            label="Tên hoạt động"
-            rules={[{ required: true, message: "Nhập tên hoạt động" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="moTa" label="Mô tả">
-            <Input.TextArea rows={3} />
-          </Form.Item>
-          <Form.Item name="diaDiem" label="Địa điểm">
-            <Input />
-          </Form.Item>
-          <Form.Item name="loaiId" label="Loại hoạt động">
-            <Select
-              placeholder="Chọn loại hoạt động"
-              allowClear
-              options={loaiHoatDongs.map((l) => ({
-                label: l.tenLoai,
-                value: l.id,
-              }))}
-            />
-          </Form.Item>
+        <div className="space-y-2">
+          <Form form={form} layout="vertical" onFinish={handleSubmit}>
+            <Form.Item
+              name="tenHd"
+              label="Tên hoạt động"
+              rules={[{ required: true, message: "Nhập tên hoạt động" }]}
+            >
+              <Input />
+            </Form.Item>
 
-          <Form.Item name="timeRange" label="Thời gian diễn ra">
-            <RangePicker showTime style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item name="gioiHanSv" label="Giới hạn sinh viên">
-            <Input type="number" min={0} />
-          </Form.Item>
-          <Button type="primary" htmlType="submit" block>
-            {editing ? "Cập nhật" : "Tạo mới"}
-          </Button>
-        </Form>
+            <Form.Item name="moTa" label="Mô tả">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+
+            <Form.Item name="diaDiem" label="Địa điểm">
+              <Input />
+            </Form.Item>
+
+            <Form.Item name="loaiId" label="Loại hoạt động">
+              <Select
+                placeholder="Chọn loại hoạt động"
+                allowClear
+                options={loaiHoatDongs.map((l) => ({
+                  label: l.tenLoai,
+                  value: l.id,
+                }))}
+              />
+            </Form.Item>
+
+            <Form.Item name="timeRange" label="Thời gian diễn ra">
+              <RangePicker showTime style={{ width: "100%" }} />
+            </Form.Item>
+
+            <Form.Item name="gioiHanSv" label="Giới hạn sinh viên">
+              <Input type="number" min={0} />
+            </Form.Item>
+
+            <div className="pt-2">
+              <Button type="primary" htmlType="submit" block>
+                {editing ? "Cập nhật" : "Tạo mới"}
+              </Button>
+            </div>
+          </Form>
+        </div>
       </Modal>
 
       <Drawer
@@ -354,12 +373,14 @@ export default function ActivityManagement() {
         onClose={() => setDrawerOpen(false)}
         width={600}
       >
-        <Table
-          dataSource={regList}
-          columns={regColumns}
-          rowKey="id"
-          loading={regLoading}
-        />
+        <div className="bg-white rounded-xl border border-slate-200 p-3">
+          <Table
+            dataSource={regList}
+            columns={regColumns}
+            rowKey="id"
+            loading={regLoading}
+          />
+        </div>
       </Drawer>
     </div>
   );

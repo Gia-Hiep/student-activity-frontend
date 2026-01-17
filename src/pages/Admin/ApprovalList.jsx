@@ -74,11 +74,14 @@ export default function ApprovalList() {
     {
       title: "File",
       render: (_, r) => (
-        <Image
-          width={80}
-          src={`http://localhost:8080${r.fileUrl}`}
-          alt="minh chứng"
-        />
+        <div className="flex items-center">
+          <Image
+            width={80}
+            className="rounded-lg"
+            src={`http://localhost:8080${r.fileUrl}`}
+            alt="minh chứng"
+          />
+        </div>
       ),
     },
     {
@@ -89,41 +92,50 @@ export default function ApprovalList() {
     {
       title: "Thao tác",
       render: (_, r) => (
-        <>
-          <Button
-            type="primary"
-            size="small"
-            style={{ marginRight: 8 }}
-            onClick={() => approve(r.id)}
-          >
+        <div className="flex items-center gap-2">
+          <Button type="primary" size="small" onClick={() => approve(r.id)}>
             Duyệt
           </Button>
-          <Button
-            danger
-            size="small"
-            onClick={() => confirmReject(r)}
-          >
+          <Button danger size="small" onClick={() => confirmReject(r)}>
             Từ chối
           </Button>
-        </>
+        </div>
       ),
     },
   ];
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">Duyệt minh chứng</h2>
-      <Table
-        dataSource={data}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-      />
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold text-slate-800">
+            Duyệt minh chứng
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Kiểm tra minh chứng sinh viên gửi và thực hiện duyệt hoặc từ chối.
+          </p>
+        </div>
 
+        <div className="text-sm text-slate-500">
+          Tổng chờ duyệt:{" "}
+          <span className="font-semibold text-slate-700">{data.length}</span>
+        </div>
+      </div>
+
+      {/* Table Card */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+        <Table
+          dataSource={data}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+        />
+      </div>
+
+      {/* Reject Modal */}
       <Modal
-        title={`Từ chối minh chứng của ${
-          rejecting?.sinhVien?.hoTen || ""
-        }`}
+        title={`Từ chối minh chứng của ${rejecting?.sinhVien?.hoTen || ""}`}
         open={!!rejecting}
         onOk={handleReject}
         onCancel={() => setRejecting(null)}
@@ -131,15 +143,27 @@ export default function ApprovalList() {
         okButtonProps={{ danger: true }}
         cancelText="Hủy"
       >
-        <p>
-          Hoạt động: <strong>{rejecting?.hoatDong?.tenHd}</strong>
-        </p>
-        <Input.TextArea
-          rows={4}
-          placeholder="Nhập lý do từ chối..."
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-        />
+        <div className="space-y-3">
+          <p className="text-sm text-slate-700">
+            Hoạt động:{" "}
+            <strong className="text-slate-900">
+              {rejecting?.hoatDong?.tenHd}
+            </strong>
+          </p>
+
+          <div>
+            <p className="text-sm font-medium text-slate-700 mb-2">
+              Lý do từ chối
+            </p>
+
+            <Input.TextArea
+              rows={4}
+              placeholder="Nhập lý do từ chối..."
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+          </div>
+        </div>
       </Modal>
     </div>
   );
